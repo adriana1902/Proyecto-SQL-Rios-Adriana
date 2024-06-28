@@ -9,3 +9,5 @@ También, se debe tener en cuenta si hay familias con más de un hijo, para así
 
 
 - Diagramas de entidad relación de la BD
+
+![alt text](image.png)
