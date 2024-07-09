@@ -9,3 +9,5 @@ También, se debe tener en cuenta si hay familias con más de un hijo, para así
 - DER
 
 ![alt text](image.png)
+
+![alt text](image-1.png)
