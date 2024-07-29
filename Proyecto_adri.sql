@@ -1,82 +1,101 @@
-DROP DATABASE IF EXISTS LAS_CARMELITAS ;
+DROP DATABASE IF EXISTS las_carmelitas;
 
-CREATE DATABASE LAS_CARMELITAS ;
+CREATE DATABASE las_carmelitas;
 
-USE LAS_CARMELITAS ; 
+USE las_carmelitas; 
 
-CREATE TABLE Ciclo_Escolar 
-	(
-MATERNAL INT (10),
-JARDÍN INT (10),
-PREESCOLAR INT (10),
-PRIMARIA INT (10),
-SECUNDARIA INT (10),
-PRIMARY KEY (Administracion)
-)
-;
+CREATE TABLE ALUMNOS (
+	id_alumno int NOT NULL PRIMARY KEY
+,	nombre  VARCHAR (40) NOT NULL
+,	apellido VARCHAR (40) NOT NULL 
+,	domicilio VARCHAR (60)
+,	telefono VARCHAR (15)
+,	anio_ingreso YEAR NOT NULL	
+) ENGINE = innoDB;  
 
-CREATE TABLE Alumnos
-	(
-NOMBRE  VARCHAR (40), 
-APELLIDO VARCHAR (40), 
-ID_LEGAJO int primary key not null, 
-DOMICILIO VARCHAR (60), 
-TELEFONO VARCHAR (15),
-ANIO_INGRESO YEAR 
-PRIMARY KEY (Ciclo_Escolar) INT NOT NULL, 
-FK_PADRES INT NOT NULL,
-FOREIGN KEY (FK_PADRES) REFERENCES PADRES  
-) 
-;  
+CREATE TABLE PADRES (
+	id_padres int NOT NULL PRIMARY KEY,
+	nombre VARCHAR (40) NOT NULL,
+	apellido VARCHAR (40) NOT NULL, 
+	ocupacion VARCHAR (30) NOT NULL,
+	domicilio VARCHAR (60) NOT NULL, 
+	telefono VARCHAR (15),
+    ALUMNOS_id_alumno INT NOT NULL, 
+    FOREIGN KEY (ALUMNOS_id_alumno) REFERENCES ALUMNOS (id_alumno)
+	) 
+    COMMENT "ES PADRE DE:" ;
 
-CREATE TABLE Docentes 
-	(
-NOMBRE VARCHAR (40), 
-APELLIDO VARCHAR (40), 
-ID_LEGAJO int (20), 
-TITULO VARCHAR (100), 
-DOMICILIO VARCHAR (60), 
-TELEFONO VARCHAR (15),
-EMAIL VARCHAR (100), 
-MATERIA VARCHAR (30),
-HORARIO TIME
-) 
-;  
+CREATE TABLE ADMINISTRACION (
+	id_pagos_admin int NOT NULL,
+	id_cobranzas_admin int NOT NULL,
+	descripcion varchar(200) NOT NULL,
+	CONSTRAINT PK_ADMINISTRACION PRIMARY KEY (id_pagos_admin, id_cobranzas_admin),
+	PADRES_id_padres INT NOT NULL,
+    FOREIGN KEY (PADRES_id_padres) REFERENCES PADRES (id_padres)
+    );
 
-CREATE TABLE Padres
-	(
-NOMBRE VARCHAR (40),
-APELLIDO VARCHAR (40), 
--- LEGAJO HIJOS Acá quisiera vincular la información de los hijos con los padres
-OCUPACION VARCHAR (30),
-DOMICILIO VARCHAR (60), 
-TELEFONO VARCHAR (15)
-) 
-;  
+ALTER TABLE ADMINISTRACION ADD INDEX idx_cobranzas (id_cobranzas_admin);
 
-CREATE TABLE Administracion
-	(
-PAGOS INT (20),
-COBRANZAS INT (20),
-PRIMARY KEY (ID_LEGAJO)
-)
-;
 
-CREATE TABLE Pagos
-	(
-PROVEEDORES VARCHAR (100) NOT NULL,
-SERVICIOS VARCHAR (60),
-HABERES INT (9),
-COB_MEDICA VARCHAR (20),
-SEGUROS DECIMAL (20,3)
-)
-;
+CREATE TABLE PAGOS (
+	id_pagos INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	proveedores VARCHAR (100) NOT NULL,
+	servicios VARCHAR (60) NOT NULL,
+	haberes int NOT NULL,
+	cob_medica VARCHAR (20) NOT NULL,
+	seguros FLOAT (20.3),
+    ADMINISTRACION_id_pagos_admin INT NOT NULL,
+    FOREIGN KEY (ADMINISTRACION_id_pagos_admin) REFERENCES ADMINISTRACION (id_pagos_admin)
+);
 
-CREATE TABLE Cobranzas
-	(
-CUOTA INT (65),
-MATRICULA INT (60),
-MICRO INT (9),
-COMEDOR INT (20)
-)
-;
+CREATE TABLE COBRANZAS (
+	id_cobranza INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	cuota int NOT NULL,
+	matricula int NOT NULL,
+	micro int NOT NULL,
+	comedor int NOT NULL,
+	FOREIGN KEY (id_cobranza) REFERENCES ADMINISTRACION (id_cobranzas_admin)
+);
+
+
+    CREATE TABLE DOCENTES (
+	id_docente int NOT NULL PRIMARY KEY, 
+	nombre VARCHAR (40) NOT NULL, 
+	apellido VARCHAR (40) NOT NULL, 
+	titulo VARCHAR (100) NOT NULL, 
+	domicilio VARCHAR (60) NOT NULL, 
+	telefono VARCHAR (15),
+	email VARCHAR (100) NOT NULL UNIQUE,
+	materia VARCHAR (30) NOT NULL,
+	hora_ingreso TIME,
+    id_pagos_admin int NOT NULL,
+    CONSTRAINT FOREIGN KEY (id_docente) REFERENCES ADMINISTRACION (id_pagos_admin)
+	) ENGINE = innoDB;
+
+
+CREATE TABLE CICLO_ESCOLAR (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	descripcion varchar(200) NOT NULL,
+	id_alumno int NOT NULL, 
+    CONSTRAINT FOREIGN KEY (id_alumno) REFERENCES ALUMNOS (id_alumno),
+    id_docente int NOT NULL,
+    CONSTRAINT id_docente FOREIGN KEY (id_docente) REFERENCES DOCENTES (id_docente) 
+    ) ENGINE = innoDB  ;
+
+CREATE TABLE INSCRIPCIONES (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id_alumno INT NOT NULL,
+  id_ciclo_escolar INT NOT NULL,
+  id_docente INT NOT NULL,
+  año_escolar YEAR NOT NULL,
+  FOREIGN KEY (id_alumno) REFERENCES ALUMNOS (id_alumno),
+  FOREIGN KEY (id_ciclo_escolar) REFERENCES CICLO_ESCOLAR (id),
+  FOREIGN KEY (id_docente) REFERENCES DOCENTES (id_docente)
+);
+
+CREATE TABLE MATERIAS (
+	id_materia INT NOT NULL PRIMARY KEY
+,	descripcion VARCHAR (30)
+,	id INT NOT NULL AUTO_INCREMENT 
+,	FOREIGN KEY (id) REFERENCES CICLO_ESCOLAR (id)
+);
