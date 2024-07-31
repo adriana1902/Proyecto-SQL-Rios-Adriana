@@ -36,7 +36,6 @@ CREATE TABLE ADMINISTRACION (
 
 ALTER TABLE ADMINISTRACION ADD INDEX idx_cobranzas (id_cobranzas_admin);
 
-
 CREATE TABLE PAGOS (
 	id_pagos INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	proveedores VARCHAR (100) NOT NULL,
@@ -44,9 +43,15 @@ CREATE TABLE PAGOS (
 	haberes int NOT NULL,
 	cob_medica VARCHAR (20) NOT NULL,
 	seguros FLOAT (20.3),
-    ADMINISTRACION_id_pagos_admin INT NOT NULL,
-    FOREIGN KEY (ADMINISTRACION_id_pagos_admin) REFERENCES ADMINISTRACION (id_pagos_admin)
+    id_pagos_admin INT NOT NULL,
+    id_cobranzas_admin INT NOT NULL,
+    ADMINISTRACION_id_pagos_admin INT NOT NULL
+    -- FOREIGN KEY (ADMINISTRACION_id_pagos_admin) REFERENCES ADMINISTRACION (id_pagos_admin)
 );
+
+ALTER TABLE PAGOS 
+	ADD CONSTRAINT fk_pagos_end
+	FOREIGN KEY (id_pagos_admin, id_cobranzas_admin) REFERENCES ADMINISTRACION (id_pagos_admin, id_cobranzas_admin);
 
 CREATE TABLE COBRANZAS (
 	id_cobranza INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -54,9 +59,14 @@ CREATE TABLE COBRANZAS (
 	matricula int NOT NULL,
 	micro int NOT NULL,
 	comedor int NOT NULL,
-	FOREIGN KEY (id_cobranza) REFERENCES ADMINISTRACION (id_cobranzas_admin)
+	id_pagos_admin INT NOT NULL,
+    id_cobranzas_admin INT NOT NULL
+	-- FOREIGN KEY (id_cobranza) REFERENCES ADMINISTRACION (id_cobranzas_admin)
 );
 
+ALTER TABLE COBRANZAS 
+	ADD CONSTRAINT fk_cobranzas_end
+	FOREIGN KEY (id_pagos_admin, id_cobranzas_admin) REFERENCES ADMINISTRACION (id_pagos_admin, id_cobranzas_admin);
 
     CREATE TABLE DOCENTES (
 	id_docente int NOT NULL PRIMARY KEY, 
