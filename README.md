@@ -6,7 +6,7 @@ Trabajaremos sobre una base creada a partir de la información de un colegio pri
 Los alumnos deben abonar una cuota mensual, la cual varía de acuerdo con el año en el que se encuentra cada uno.
 También, se debe tener en cuenta si hay familias con más de un hijo, para así aplicar descuento.
 
-- DER
+- DER 1 y 2
 
 ![alt text](image.png)
 
