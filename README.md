@@ -12,4 +12,5 @@ También, se debe tener en cuenta si hay familias con más de un hijo, para así
 
 ![ ][def]
 
-[def]: DER_actualizado-2.png
+[def]: DER_actualizado.png
+
