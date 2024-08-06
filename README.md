@@ -10,7 +10,7 @@ También, se debe tener en cuenta si hay familias con más de un hijo, para así
 
 ![alt text](image.png)
 
-![ ][def]
+![ ][def] 
 
-[def]: DER_actualizado.png
+[def]:DER_actualizado.png
 

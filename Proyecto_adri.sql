@@ -10,7 +10,7 @@ CREATE TABLE ALUMNOS (
 ,	apellido VARCHAR (40) NOT NULL 
 ,	domicilio VARCHAR (60)
 ,	telefono VARCHAR (15)
-,	anio_ingreso YEAR NOT NULL	
+,	anio_ingreso INT NOT NULL	
 ) ENGINE = innoDB;  
 
 CREATE TABLE PADRES (
@@ -22,7 +22,7 @@ CREATE TABLE PADRES (
 	telefono VARCHAR (15),
     ALUMNOS_id_alumno INT NOT NULL, 
     FOREIGN KEY (ALUMNOS_id_alumno) REFERENCES ALUMNOS (id_alumno)
-	) 
+	) ENGINE = innoDB,  
     COMMENT "ES PADRE DE:" ;
 
 CREATE TABLE ADMINISTRACION (
@@ -69,19 +69,23 @@ ALTER TABLE COBRANZAS
 	FOREIGN KEY (id_pagos_admin, id_cobranzas_admin) REFERENCES ADMINISTRACION (id_pagos_admin, id_cobranzas_admin);
 
     CREATE TABLE DOCENTES (
-	id_docente int NOT NULL PRIMARY KEY, 
+	id_docente INT NOT NULL PRIMARY KEY, 
 	nombre VARCHAR (40) NOT NULL, 
 	apellido VARCHAR (40) NOT NULL, 
 	titulo VARCHAR (100) NOT NULL, 
-	domicilio VARCHAR (60) NOT NULL, 
-	telefono VARCHAR (15),
+	domicilio VARCHAR (160) NOT NULL, 
+	telefono VARCHAR (15), 
 	email VARCHAR (100) NOT NULL UNIQUE,
 	materia VARCHAR (30) NOT NULL,
-	hora_ingreso TIME,
-    id_pagos_admin int NOT NULL,
-    CONSTRAINT FOREIGN KEY (id_docente) REFERENCES ADMINISTRACION (id_pagos_admin)
+	hora_ingreso INT NOT NULL, 
+    id_pagos_admin INT NOT NULL,
+    id_cobranzas_admin INT NOT NULL,
+    CONSTRAINT FOREIGN KEY (id_pagos_admin,id_cobranzas_admin) REFERENCES ADMINISTRACION (id_pagos_admin,id_cobranzas_admin)
 	) ENGINE = innoDB;
 
+ALTER TABLE DOCENTES 
+	ADD CONSTRAINT fk_cobranzas_end
+	FOREIGN KEY (id_pagos_admin, id_cobranzas_admin) REFERENCES ADMINISTRACION (id_pagos_admin, id_cobranzas_admin);
 
 CREATE TABLE CICLO_ESCOLAR (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -89,7 +93,7 @@ CREATE TABLE CICLO_ESCOLAR (
 	id_alumno int NOT NULL, 
     CONSTRAINT FOREIGN KEY (id_alumno) REFERENCES ALUMNOS (id_alumno),
     id_docente int NOT NULL,
-    CONSTRAINT id_docente FOREIGN KEY (id_docente) REFERENCES DOCENTES (id_docente) 
+    CONSTRAINT FOREIGN KEY (id_docente) REFERENCES DOCENTES (id_docente) 
     ) ENGINE = innoDB  ;
 
 CREATE TABLE INSCRIPCIONES (
@@ -97,7 +101,7 @@ CREATE TABLE INSCRIPCIONES (
   id_alumno INT NOT NULL,
   id_ciclo_escolar INT NOT NULL,
   id_docente INT NOT NULL,
-  año_escolar YEAR NOT NULL,
+  anio_escolar INT NOT NULL,
   FOREIGN KEY (id_alumno) REFERENCES ALUMNOS (id_alumno),
   FOREIGN KEY (id_ciclo_escolar) REFERENCES CICLO_ESCOLAR (id),
   FOREIGN KEY (id_docente) REFERENCES DOCENTES (id_docente)
@@ -109,3 +113,25 @@ CREATE TABLE MATERIAS (
 ,	id INT NOT NULL AUTO_INCREMENT 
 ,	FOREIGN KEY (id) REFERENCES CICLO_ESCOLAR (id)
 );
+
+LOAD DATA LOCAL INFILE './alumnos.csv'
+        INTO TABLE  ALUMNOS 
+            FIELDS TERMINATED   BY ','  ENCLOSED BY ''
+            LINES TERMINATED    BY '\n' 		 
+            IGNORE 1 LINES
+		(id_alumno,nombre,apellido,domicilio,telefono,anio_ingreso) ;
+  
+use las_carmelitas; select * from padres ;
+
+LOAD DATA LOCAL INFILE './padres.csv'
+        INTO TABLE  PADRES 
+            FIELDS TERMINATED   BY ','  ENCLOSED BY ''
+            LINES TERMINATED    BY '\n' 		 
+            IGNORE 1 LINES
+		(id_padres,nombre,apellido,ocupacion,domicilio,telefono,ALUMNOS_id_alumno) ;
+
+
+
+CREATE VIEW APELLIDO_ALUMNOS_VISTA as 
+	SELECT apellido
+	FROM ALUMNOS; 
