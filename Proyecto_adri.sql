@@ -114,24 +114,24 @@ CREATE TABLE MATERIAS (
 ,	FOREIGN KEY (id) REFERENCES CICLO_ESCOLAR (id)
 );
 
-LOAD DATA LOCAL INFILE './alumnos.csv'
-        INTO TABLE  ALUMNOS 
-            FIELDS TERMINATED   BY ','  ENCLOSED BY ''
-            LINES TERMINATED    BY '\n' 		 
-            IGNORE 1 LINES
-		(id_alumno,nombre,apellido,domicilio,telefono,anio_ingreso) ;
+-- LOAD DATA LOCAL INFILE './alumnos.csv'
+--         INTO TABLE  ALUMNOS 
+--             FIELDS TERMINATED   BY ','  ENCLOSED BY ''
+--             LINES TERMINATED    BY '\n' 		 
+--             IGNORE 1 LINES
+-- 		(id_alumno,nombre,apellido,domicilio,telefono,anio_ingreso) ;
   
-use las_carmelitas; select * from padres ;
+-- use las_carmelitas; select * from padres ;
 
-LOAD DATA LOCAL INFILE './padres.csv'
-        INTO TABLE  PADRES 
-            FIELDS TERMINATED   BY ','  ENCLOSED BY ''
-            LINES TERMINATED    BY '\n' 		 
-            IGNORE 1 LINES
-		(id_padres,nombre,apellido,ocupacion,domicilio,telefono,ALUMNOS_id_alumno) ;
+-- LOAD DATA LOCAL INFILE './padres.csv'
+--         INTO TABLE  PADRES 
+--             FIELDS TERMINATED   BY ','  ENCLOSED BY ''
+--             LINES TERMINATED    BY '\n' 		 
+--             IGNORE 1 LINES
+-- 		(id_padres,nombre,apellido,ocupacion,domicilio,telefono,ALUMNOS_id_alumno) ;
 
 
 
-CREATE VIEW APELLIDO_ALUMNOS_VISTA as 
-	SELECT apellido
-	FROM ALUMNOS; 
+-- CREATE VIEW APELLIDO_ALUMNOS_VISTA as 
+-- 	SELECT apellido
+-- 	FROM ALUMNOS; 
